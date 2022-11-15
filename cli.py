@@ -1,57 +1,42 @@
 # This file contains the Command Line Interface (CLI) for
 # the Tic-Tac-Toe game. This is where input and output happens.
 # For core game logic, see logic.py.
-from logic import make_empty_board, get_winner, other_player
-
+from game import Game,Board
+from player import Human,Bot
 
 if __name__ == '__main__':
-    board = make_empty_board()
-    winner = None
-    currentPlayer = 'O'
-    while winner == None:
+    
+    noValidInput = True
+    while(noValidInput):
+        gamemode = input('Enter 1 to play against a bot, enter 2 for multiplayer:\n')
+        try:
+            gamemode = int(gamemode)
+            if (gamemode==1) or (gamemode==2):
+                noValidInput = False
+        except:
+            print('Invalid input, try again')
+    
+    
+    if(gamemode==1):
+        player1 = Human('O')
+        player2 = Bot('X')
+    else:
+        player1 = Human('O')
+        player2 = Human('X')
+    
+    welcome_string = '''
+          The game is Tic Tac Toe, and will ask you to enter two inputs 
+          when it is your turn. On your turn, enter a signle digit number for
+          the row you want to mark, and a single digit number for the column 
+          you want to mark (e.g entering 3 and 1 will mark the lower left corner). 
+          The numbers must be either 1, 2, or 3 as the board is only 3x3. 
+          Good Luck!
+          '''
+    
+    print(welcome_string)
+    
+    game = Game(player1,player2)
+    game.run()
         
-        for row in board:
-            printLine = [x if x is not None else '_' for x in row]
-            print(printLine[0],printLine[1],printLine[2])
         
-        noValidInput = True
-        while(noValidInput):
-            y = input(
-                f'{currentPlayer}\'s turn! Type row you want to mark\n'
-            )
-            x = input(
-                f'{currentPlayer}\'s turn! Type column you want to mark\n'
-            )
-            
-            try:
-                x = int(x)-1
-                y = int(y)-1
-                if (x<0) or (x>4) or (y<0) or (y>4):
-                    print('row or column selected out of bounds')
-                    continue                
-                if board[y][x] is not None:
-                    print('This spot is already marked!')
-                    continue
-                
-                board[y][x] = currentPlayer
-                noValidInput=False
-            except:
-                print('Invalid input, try again')
-        
-        currentPlayer = other_player(currentPlayer)
-        winner = get_winner(board)
-        
-        if winner is not None:
-            for row in board:
-                printLine = [x if x is not None else '_' for x in row]
-                print(printLine[0],printLine[1],printLine[2])
-            print(f'{other_player(currentPlayer)} wins!')
-        
-        isDraw = True
-        for row in board:
-            if None in row:
-                isDraw = False
-        if isDraw:
-            print('Draw!')
-            break
 
