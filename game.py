@@ -27,7 +27,7 @@ class Game:
         self.board = Board()
         self.current_player = player1
         self.other_player = player2
-        
+
     def run(self) -> None:
         winner = None
         while winner is None:            
@@ -90,3 +90,7 @@ class Game:
             return board[2][0]
 
         return None
+    
+    def get_board(self)->Board:
+        return self.board
+    
