@@ -23,6 +23,7 @@ class Board:
 
 
 class Game:
+
     def __init__(self, player1: Player, player2: Player) -> None:
         self.board = Board()
         self.current_player = player1
@@ -35,6 +36,10 @@ class Game:
             #check if all spaces are filled and it's a draw
             if self.check_draw(self.board):
                 print('Draw!')
+                self.output_game_result(
+                    self.current_player,'draw',
+                    self.other_player,'draw'
+                )
                 break
             
             #have current player make move
@@ -50,7 +55,8 @@ class Game:
             #Winner found, print end result
             if winner is not None:
                 self.board.print_board()
-                print(f'{winner} wins!')
+                print(f'{self.current_player.get_name()} wins!')
+                self.output_game_result(self.current_player,'win',self.other_player,'lose')
                 break
 
             self.switch_players()
@@ -93,4 +99,12 @@ class Game:
     
     def get_board(self)->Board:
         return self.board
+
+    def output_game_result(
+                self,player1:Player,result1:str,player2:Player,result2:str
+            ) -> List[tuple]:
+        return [
+            (player1.get_name(),result1),
+            (player2.get_name(),result2)
+        ]
     

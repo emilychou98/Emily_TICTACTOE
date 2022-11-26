@@ -2,11 +2,15 @@ from typing import List, Optional
 import random 
 
 class Player:
-    def __init__(self, player_char:str) -> None:
+    def __init__(self, player_char:str, player_name:str) -> None:
         self.char = player_char
+        self.name = player_name
         
     def get_char(self) -> str:
         return self.char
+
+    def get_name(self) -> str:
+        return self.name
     
 class Human(Player):
     
@@ -15,10 +19,10 @@ class Human(Player):
         noValidInput = True
         while(noValidInput):
             y = input(
-                f'Player {self.get_char()}\'s turn! Type row you want to mark\n'
+                f'Player {self.get_name()}\'s turn! Type row you want to mark\n'
             )
             x = input(
-                f'Player {self.get_char()}\'s turn! Type column you want to mark\n'
+                f'Player {self.get_name()}\'s turn! Type column you want to mark\n'
             )
             
             try:
@@ -40,6 +44,9 @@ class Human(Player):
         
 class Bot(Player):
     
+    def __init__(self, player_char: str, player_name: str = 'Bot') -> None:
+        super().__init__(player_char, player_name)
+
     def make_move(self, board: List[List[Optional[str]]]
             ) -> List[List[Optional[str]]]:
         

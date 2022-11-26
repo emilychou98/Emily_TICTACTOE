@@ -3,26 +3,53 @@
 # For core game logic, see logic.py.
 from game import Game,Board
 from player import Human,Bot
+import pandas as pd
 
 if __name__ == '__main__':
+
+    stats = pd.read_csv('win_database.csv')
     
     noValidInput = True
     while(noValidInput):
-        gamemode = input('Enter 1 to play against a bot, enter 2 for multiplayer:\n')
+        gamemode = input('Enter 1 to play against a bot\nEnter 2 for multiplayer\nEnter 3 to see stats:\n')
         try:
             gamemode = int(gamemode)
             if (gamemode==1) or (gamemode==2):
                 noValidInput = False
+            else:
+                raise Exception
         except:
-            print('Invalid input, try again')
+            print('\t\nInvalid input, try again\n')
     
     
     if(gamemode==1):
-        player1 = Human('O')
+        while(noValidInput):
+            player1Name = input('Enter Player Name: ')
+            if player1Name=='Bot':
+                print('\nYou are not a bot, please use a different name\n')
+            else:
+                noValidInput==False
+        player1 = Human('O',player1Name)
         player2 = Bot('X')
+    elif(gamemode==2):
+        while(noValidInput):
+            player1Name = input('Enter Player 1 Name: ')
+            if player1Name=='Bot':
+                print('\nYou are not a bot, please use a different name\n')
+            else:
+                noValidInput==False
+        while(noValidInput):
+            player2Name = input('Enter Player 2 Name: ')
+            if player2Name=='Bot':
+                print('\nYou are not a bot, please use a different name\n')
+            else:
+                
+                noValidInput==False
+        player1 = Human('O',player1Name)
+        player2 = Human('X',player2Name)
     else:
-        player1 = Human('O')
-        player2 = Human('X')
+        #TODO
+        pass
     
     welcome_string = '''
           The game is Tic Tac Toe, and will ask you to enter two inputs 
