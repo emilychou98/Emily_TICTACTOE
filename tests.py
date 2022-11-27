@@ -1,16 +1,17 @@
 import unittest
 from game import Game
 from player import Bot
+from database import Database
 
 class TestGame(unittest.TestCase):
     
     def test_get_winner(self):
         """unit tests get_winner function of game.py
         """
-        
+        database = Database('games.csv','players.csv','moves.csv')
         player1 = Bot('X')
         player2 = Bot('O')
-        game = Game(player1,player2)
+        game = Game(player1,player2,database)
         board = game.get_board()
         
         board.set_board([
@@ -62,10 +63,18 @@ class TestGame(unittest.TestCase):
         ])
         self.assertEqual(game.get_winner(board), 'O')
 
+        board.set_board([
+            [None, 'O', None],
+            [None, 'O', 'X'],
+            [None, 'O', 'X'],
+        ])
+        self.assertEqual(game.get_winner(board), 'O')
+
     def test_check_draw(self):
+        database = Database('games.csv','players.csv','moves.csv')
         player1 = Bot('X')
         player2 = Bot('O')
-        game = Game(player1,player2)
+        game = Game(player1,player2,database)
         board = game.get_board()
         board.set_board([
             ['X', 'O', 'X'],
@@ -75,18 +84,19 @@ class TestGame(unittest.TestCase):
         self.assertEqual(game.check_draw(board), True)
         
         board.set_board([
-            ['X', None, 'X'],
-            ['O', 'X', 'X'],
-            ['O', 'X', 'O'],
+            [None, 'O', None],
+            [None, 'O', 'X'],
+            [None, 'O', 'X'],
         ])
         self.assertEqual(game.check_draw(board), False)
 
     def test_other_player(self):
         """unit tests other_player function of game.py
         """
+        database = Database('games.csv','players.csv','moves.csv')
         player1 = Bot('X')
         player2 = Bot('O')
-        game = Game(player1,player2)
+        game = Game(player1,player2,database)
         self.assertEqual(game.current_player.get_char(),'X')
         game.switch_players()
         self.assertEqual(game.current_player.get_char(),'O')

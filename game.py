@@ -12,6 +12,9 @@ class Board:
         
     def get_board(self) -> List[List[Optional[str]]]:
         return self.board
+
+    def write_move(self,player_char:str,move_tuple:tuple)->None:
+        self.board[move_tuple[0]][move_tuple[1]] = player_char
     
     def set_board(self, new_board : List[List[Optional[str]]]) -> None:
         self.board = new_board
@@ -25,7 +28,12 @@ class Board:
 
 class Game:
 
-    def __init__(self, player1: Player, player2: Player, database: Database) -> None:
+    def __init__(self, player1: Player,
+             player2: Player, database: Database) -> None:
+        self.game_id = (
+            player1.get_name()+player2.get_name()
+            +database.get_time()
+        )
         self.board = Board()
         self.current_player = player1
         self.other_player = player2
@@ -37,18 +45,25 @@ class Game:
             self.board.print_board()
             #check if all spaces are filled and it's a draw
             if self.check_draw(self.board):
-                print('Draw!')
-                self.output_game_result(
+                self.conclude_game(
                     self.current_player,'draw',
-                    self.other_player,'draw'
+                    self.other_player,'draw',
+                    None
                 )
                 break
             
             #have current player make move
-            self.board.set_board(
-                self.current_player.make_move(
+            player_move = self.current_player.make_move(
                     self.board.get_board()
-                )
+            )
+            self.board.write_move(
+                self.current_player.get_char(),
+                player_move
+            )
+            self.database.record_move(
+                self.current_player,
+                self.game_id,
+                player_move
             )
 
             #check winner
@@ -57,10 +72,10 @@ class Game:
             #Winner found, print end result
             if winner is not None:
                 self.board.print_board()
-                print(f'{self.current_player.get_name()} wins!')
-                self.output_game_result(
+                self.conclude_game(
                     self.current_player,'win',
-                    self.other_player,'lose'
+                    self.other_player,'lose',
+                    self.current_player.get_name()
                 )
                 break
 
@@ -87,17 +102,21 @@ class Game:
         board = board_obj.get_board()
         
         for i in range(3):
-            if (board[i][0]==board[i][1] 
-                    and board[i][1]==board[i][2]):
+            if ((board[i][0]==board[i][1])
+                    and (board[i][1]==board[i][2])
+                    and (board[i][0] is not None)):
                 return board[i][0] #return row winner
-            if (board[0][i]==board[1][i] 
-                    and board[1][i]==board[2][i]):
+            if ((board[0][i]==board[1][i])
+                    and (board[1][i]==board[2][i])
+                    and (board[0][i] is not None)):
                 return board[0][i] #return col winner
-        if (board[0][0]==board[1][1] 
-                    and board[1][1]==board[2][2]):
+        if ((board[0][0]==board[1][1]) 
+                    and (board[1][1]==board[2][2])
+                    and (board[0][0] is not None)):
             return board[0][0]
-        elif (board[2][0]==board[1][1] 
-                    and board[1][1]==board[0][2]):
+        elif ((board[2][0]==board[1][1]) 
+                    and (board[1][1]==board[0][2])
+                    and (board[2][0] is not None)):
             return board[2][0]
 
         return None
@@ -105,20 +124,19 @@ class Game:
     def get_board(self)->Board:
         return self.board
 
-    def output_game_result(
-                self,player1:Player,result1:str,player2:Player,result2:str
-            ) -> Dict[tuple]:
-
-        self.database.add_game_result({
-            player1.get_char(): 
-                {
-                    'name':player1.get_name(),
-                    'result': result1
-                },
-            player2.get_char(): 
-                {
-                    'name':player2.get_name(),
-                    'result': result2
-                }
-        })
+    def conclude_game(
+                self,player1:Player,result1:str,
+                player2:Player,result2:str,
+                winner_name:str
+            ) -> None:
+        if winner_name is None:
+            print('Draw')
+        else:
+            print(f'{winner_name} wins!')
+        self.database.end_game(self.game_id,winner_name)
+        self.database.update_player_stats(player1,result1)
+        self.database.update_player_stats(player2,result2)
+        self.database.write_records_to_disk()
+        print('Win Ratio Leaderboard:')
+        print(self.database.get_leaderboard())
     

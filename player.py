@@ -15,7 +15,7 @@ class Player:
 class Human(Player):
     
     def make_move(self, board: List[List[Optional[str]]]
-            ) -> List[List[Optional[str]]]:
+            ) -> tuple:
         noValidInput = True
         while(noValidInput):
             y = input(
@@ -34,12 +34,11 @@ class Human(Player):
                 if board[y][x] is not None:
                     print('This spot is already marked!, try again\n')
                     continue
-                
-                board[y][x] = self.get_char()
                 noValidInput=False
             except:
                 print('Invalid input, input must be a single digit number, try again\n')
-        return board        
+
+        return (y,x)        
         
         
 class Bot(Player):
@@ -48,14 +47,13 @@ class Bot(Player):
         super().__init__(player_char, player_name)
 
     def make_move(self, board: List[List[Optional[str]]]
-            ) -> List[List[Optional[str]]]:
+            ) -> tuple:
         
         #Middle space is the best
         #take it if available
         if board[1][1] is None:
-            board[1][1] = self.get_char()
             print('Bot has made a move!')
-            return board
+            return (1,1)
         
         available_spaces = []
         for row in range(len(board)):
@@ -64,6 +62,5 @@ class Bot(Player):
                     available_spaces.append((row,col))
                     
         selected = random.choice(available_spaces)
-        board[selected[0]][selected[1]] = self.get_char()
         print('Bot has made a move!')
-        return board
+        return (selected[0],selected[1])

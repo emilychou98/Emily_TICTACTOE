@@ -24,28 +24,32 @@ if __name__ == '__main__':
     
     
     if(gamemode==1):
+        noValidInput = True
         while(noValidInput):
             player1Name = input('Enter Player Name: ')
             if player1Name=='Bot':
                 print('\nYou are not a bot, please use a different name\n')
             else:
-                noValidInput==False
+                noValidInput=False
         player1 = Human('O',player1Name)
         player2 = Bot('X')
     elif(gamemode==2):
+        noValidInput=True
         while(noValidInput):
             player1Name = input('Enter Player 1 Name: ')
             if player1Name=='Bot':
                 print('\nYou are not a bot, please use a different name\n')
             else:
-                noValidInput==False
+                noValidInput=False
+
+        noValidInput = True
         while(noValidInput):
             player2Name = input('Enter Player 2 Name: ')
             if player2Name=='Bot':
                 print('\nYou are not a bot, please use a different name\n')
             else:
-
-                noValidInput==False
+                noValidInput=False
+                
         player1 = Human('O',player1Name)
         player2 = Human('X',player2Name)
     else:
@@ -63,7 +67,9 @@ if __name__ == '__main__':
     
     print(welcome_string)
     
+    
     game = Game(player1,player2,database)
+    database.start_game(game.game_id,player1,player2)
     game.run()
         
         
