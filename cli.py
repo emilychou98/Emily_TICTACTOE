@@ -4,10 +4,11 @@
 from game import Game,Board
 from player import Human,Bot
 import pandas as pd
+from database import Database
 
 if __name__ == '__main__':
 
-    stats = pd.read_csv('win_database.csv')
+    database = Database('games.csv','players.csv','moves.csv')
     
     noValidInput = True
     while(noValidInput):
@@ -43,7 +44,7 @@ if __name__ == '__main__':
             if player2Name=='Bot':
                 print('\nYou are not a bot, please use a different name\n')
             else:
-                
+
                 noValidInput==False
         player1 = Human('O',player1Name)
         player2 = Human('X',player2Name)
@@ -62,7 +63,7 @@ if __name__ == '__main__':
     
     print(welcome_string)
     
-    game = Game(player1,player2)
+    game = Game(player1,player2,database)
     game.run()
         
         

@@ -1,5 +1,6 @@
-from typing import List, Optional
+from typing import List, Dict, Optional
 from player import Player
+from database import Database
 
 class Board:
     def __init__(self) -> None:
@@ -24,10 +25,11 @@ class Board:
 
 class Game:
 
-    def __init__(self, player1: Player, player2: Player) -> None:
+    def __init__(self, player1: Player, player2: Player, database: Database) -> None:
         self.board = Board()
         self.current_player = player1
         self.other_player = player2
+        self.database = database
 
     def run(self) -> None:
         winner = None
@@ -56,7 +58,10 @@ class Game:
             if winner is not None:
                 self.board.print_board()
                 print(f'{self.current_player.get_name()} wins!')
-                self.output_game_result(self.current_player,'win',self.other_player,'lose')
+                self.output_game_result(
+                    self.current_player,'win',
+                    self.other_player,'lose'
+                )
                 break
 
             self.switch_players()
@@ -102,9 +107,18 @@ class Game:
 
     def output_game_result(
                 self,player1:Player,result1:str,player2:Player,result2:str
-            ) -> List[tuple]:
-        return [
-            (player1.get_name(),result1),
-            (player2.get_name(),result2)
-        ]
+            ) -> Dict[tuple]:
+
+        self.database.add_game_result({
+            player1.get_char(): 
+                {
+                    'name':player1.get_name(),
+                    'result': result1
+                },
+            player2.get_char(): 
+                {
+                    'name':player2.get_name(),
+                    'result': result2
+                }
+        })
     
