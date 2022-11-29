@@ -12,11 +12,14 @@ if __name__ == '__main__':
     
     noValidInput = True
     while(noValidInput):
-        gamemode = input('Enter 1 to play against a bot\nEnter 2 for multiplayer\nEnter 3 to see stats:\n')
+        gamemode = input('\nEnter 1 to play against a bot\nEnter 2 for multiplayer\nEnter 3 to see stats:\n')
         try:
             gamemode = int(gamemode)
             if (gamemode==1) or (gamemode==2):
                 noValidInput = False
+            elif(gamemode==3):
+                print('\n-----Win Ratio Leaderboard-----')
+                print(database.get_leaderboard())
             else:
                 raise Exception
         except:
@@ -52,9 +55,7 @@ if __name__ == '__main__':
                 
         player1 = Human('O',player1Name)
         player2 = Human('X',player2Name)
-    else:
-        #TODO
-        pass
+
     
     welcome_string = '''
           The game is Tic Tac Toe, and will ask you to enter two inputs 

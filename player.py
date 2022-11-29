@@ -7,15 +7,21 @@ class Player:
         self.name = player_name
         
     def get_char(self) -> str:
+        """get the type of marker the player is using
+        """
         return self.char
 
     def get_name(self) -> str:
+        """get player name
+        """
         return self.name
     
 class Human(Player):
     
     def make_move(self, board: List[List[Optional[str]]]
             ) -> tuple:
+        """have player chose where to set marker
+        """
         noValidInput = True
         while(noValidInput):
             y = input(
@@ -48,6 +54,8 @@ class Bot(Player):
 
     def make_move(self, board: List[List[Optional[str]]]
             ) -> tuple:
+        """choose where to set marker
+        """
         
         #Middle space is the best
         #take it if available

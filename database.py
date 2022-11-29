@@ -25,19 +25,27 @@ class Database:
             )
 
     def get_time(self):
+        """gets current time as a timestamp
+        """
         return str(pd.to_datetime('today').timestamp())
 
     def df_add_row(self,df:pd.DataFrame,row_data:tuple)->pd.DataFrame:
+        """adds new row to dataframe
+        """
         new_row = pd.DataFrame([row_data],columns=df.columns)
         return pd.concat([df,new_row])
 
     def start_game(self,game_id:str,player1:Player,player2:Player)->None:
+        """creates new game record
+        """
         self.games = self.df_add_row(
             self.games,
             (game_id,player1.get_name(),player2.get_name(),None)
         )
 
     def end_game(self,game_id:str,winner:str)->bool:
+        """updates winner in game record
+        """
         if self.games.iloc[-1]['game_id'] == game_id:
             self.games.iat[self.games.shape[0]-1,3] = winner
             return True
@@ -45,11 +53,15 @@ class Database:
         return False
 
     def write_records_to_disk(self)->None:
+        """saves database as csv
+        """
         self.games.to_csv('games.csv',index=False)
         self.players.to_csv('players.csv')
         self.moves.to_csv('moves.csv',index=False)
 
     def update_player_stats(self, player:Player,result:str)->None:
+        """updates wins/losses/draws for specific player
+        """
         player_dict = self.players.to_dict('index')
         if player.get_name() in player_dict.keys():
             player_dict[player.get_name()][result] += 1
@@ -61,15 +73,17 @@ class Database:
 
 
     def get_leaderboard(self)->pd.DataFrame:
+        """calculates win loss ratio and returns top 5 players
+        """
         return self.players.join(
             self.players
             .apply(lambda x: (x.win-x.lose)/sum(x),axis=1)
-            .sort_values(ascending=False)
-            .head(5)
             .rename('win_loss_ratio')
-        ).sort_values('win_loss_ratio',ascending=False)
+        ).sort_values('win_loss_ratio',ascending=False).head(5)
         
     def record_move(self,player:Player,game_id:str,move:tuple):
+        """records the move the player made
+        """
         self.moves = self.df_add_row(
             self.moves,
             (game_id,player.get_name(),player.get_char(),move)

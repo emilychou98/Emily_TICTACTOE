@@ -71,6 +71,8 @@ class TestGame(unittest.TestCase):
         self.assertEqual(game.get_winner(board), 'O')
 
     def test_check_draw(self):
+        """unit tests whether the game is a draw
+        """
         database = Database('games.csv','players.csv','moves.csv')
         player1 = Bot('X')
         player2 = Bot('O')

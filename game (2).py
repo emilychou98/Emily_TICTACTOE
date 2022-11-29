@@ -11,15 +11,23 @@ class Board:
         ]
         
     def get_board(self) -> List[List[Optional[str]]]:
+        """get board values
+        """
         return self.board
 
     def write_move(self,player_char:str,move_tuple:tuple)->None:
+        """write player move to database
+        """
         self.board[move_tuple[0]][move_tuple[1]] = player_char
     
     def set_board(self, new_board : List[List[Optional[str]]]) -> None:
+        """set what the board should be
+        """
         self.board = new_board
         
     def print_board(self)->None:
+        """prints what the board is currently
+        """
         for row in self.board:
             printLine = [x if x is not None else '_' for x in row]
             print(printLine[0],printLine[1],printLine[2])
@@ -40,6 +48,8 @@ class Game:
         self.database = database
 
     def run(self) -> None:
+        """core game loop
+        """
         winner = None
         while winner is None:            
             self.board.print_board()
@@ -82,11 +92,15 @@ class Game:
             self.switch_players()
             
     def switch_players(self)->None:
+        """switches player turn
+        """
         placeholder = self.current_player
         self.current_player = self.other_player
         self.other_player = placeholder
         
     def check_draw(self, board_obj: Board) -> bool:
+        """checks if the game is a draw
+        """
         #check if its a draw
         isDraw = True
         for row in board_obj.get_board():
@@ -122,6 +136,8 @@ class Game:
         return None
     
     def get_board(self)->Board:
+        """return board object
+        """
         return self.board
 
     def conclude_game(
@@ -129,6 +145,8 @@ class Game:
                 player2:Player,result2:str,
                 winner_name:str
             ) -> None:
+        """prints game result, statistics, and records said statistics
+        """
         if winner_name is None:
             print('Draw')
         else:
